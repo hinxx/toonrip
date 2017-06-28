@@ -6,7 +6,7 @@ import sys
 # Will download toonova.net toons
 # Supply toonova.net page link with tonn episodes listed
 #
-# Version: 0.1 2017-06-17 13:28
+# Version: 0.2 2017-06-27 22:22
 # Author:  hinkocevar@gmail.com
 # GIT: https://github.com/hinxx/toonrip
 
@@ -90,6 +90,12 @@ def links2(l):
 			vids.append(href)
 	return vids
 
+def touch(fname, mode=0o666, dir_fd=None, **kwargs):
+    flags = os.O_CREAT | os.O_APPEND
+    with os.fdopen(os.open(fname, flags=flags, mode=mode, dir_fd=dir_fd)) as f:
+        os.utime(f.fileno() if os.utime in os.supports_fd else fname,
+            dir_fd=None if os.supports_fd else dir_fd, **kwargs)
+
 def single(link, episode):
 
 	print("Looking for episode: %s" % (episode))
@@ -99,6 +105,8 @@ def single(link, episode):
 	if os.path.exists(f):
 		print("Video already present for episode ", episode)
 		return True
+
+	touch(f)
 
 	aa = links1(l)
 	#print('all links:', aa)
